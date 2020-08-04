@@ -79,12 +79,17 @@ func (s *slackNotifier) SendNotification(ctx context.Context, build *cbpb.Build)
 }
 
 func (s *slackNotifier) writeMessage(build *cbpb.Build) (*slack.WebhookMessage, error) {
+    log.Infof("Creating message")
+    log.Infof("build.Status: %q", build.Status)
+    log.Infof("build.Substitutions: %q", build.Substitutions)
 	txt := fmt.Sprintf(
-		"Cloud Build (%s, %s): %s",
-		build.ProjectId,
-		build.Id,
+		"%s, %s, %s: %s",
+		build.Substitutions["REPO_NAME"],
+		build.Substitutions["BRANCH_NAME"],
+		build.Substitutions["SHORT_SHA"],
 		build.Status,
 	)
+	log.Infof("sending message %q", txt)
 
 	var clr string
 	switch build.Status {
